@@ -50,6 +50,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+AUTH_USER_MODEL = "accounts.User"
 ROOT_URLCONF = "billionsugar_server.urls"
 
 TEMPLATES = [
