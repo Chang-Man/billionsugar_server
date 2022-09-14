@@ -11,7 +11,7 @@ def jwt_token_of(user):
     refresh = RefreshToken.for_user(user)
     jwt_token = {
         'refresh': str(refresh),
-        'access' : str(refresh.access_token)
+        'access': str(refresh.access_token)
     }
     return jwt_token
 
@@ -61,9 +61,11 @@ class UserCreateSerializer(serializers.Serializer):
         password = validated_data.get('password')
         email = validated_data.get('email')
         nickname = validated_data.get('nickname')
-        phone = validated_data.data.get('phone')
+        phone = validated_data.get('phone')
         date_of_birth = validated_data.get('date_of_birth')
-        user = User.objects.create_user(username=username, password=password, email=email, nickname=nickname, phone=phone, date_of_birth=date_of_birth)
+        user = User.objects.create_user(username, password, email, nickname=nickname, phone=phone, date_of_birth=date_of_birth)
+        print(user)
         jwt_token = jwt_token_of(user)
+        print("~~~~~~~~~~~")
         return user, jwt_token
 

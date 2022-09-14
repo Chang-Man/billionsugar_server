@@ -12,12 +12,12 @@ class User(AbstractUser):
     phone = models.CharField(max_length=11, unique=True)
     date_of_birth = models.DateField(blank=True, null=True)
 
-    objects = UserManager()
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
+    objects = UserManager()
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
     # python manage.py createsuperuser로 사용자를 만들 때 필수로 입력하게 되는 필드 리스트
