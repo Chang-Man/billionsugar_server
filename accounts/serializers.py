@@ -40,12 +40,14 @@ class UserCreateSerializer(serializers.Serializer):
         password = data.get('password')
         if not validated_password(password):
             raise FieldError('영어, 숫자, 특문이 두종류 이상 조합된 8~20자의 비밀번호만 가능합니다.')
+
         username = data.get('username')
         email = data.get('email')
         nickname = data.get('nickname')
+        phone = data.get('phone')
 
         queryset = User.objects.filter(username=username) | User.objects.filter(email=email) | User.objects.filter(
-            nickname=nickname)
+            nickname=nickname) | User.objects.filter(phone=phone)
 
         if queryset.filter(username=username).exists():
             raise DuplicationError('이미 존재하는 아이디입니다.')
@@ -53,6 +55,8 @@ class UserCreateSerializer(serializers.Serializer):
             raise DuplicationError('이미 존재하는 이메일입니다.')
         if queryset.filter(nickname=nickname).exists():
             raise DuplicationError('이미 존재하는 닉네임입니다.')
+        if queryset.filter(phone=phone).exists():
+            raise DuplicationError('이미 가입된 전화번호입니다.')
 
         return data
 
@@ -63,9 +67,7 @@ class UserCreateSerializer(serializers.Serializer):
         nickname = validated_data.get('nickname')
         phone = validated_data.get('phone')
         date_of_birth = validated_data.get('date_of_birth')
-        user = User.objects.create_user(username, password, email, nickname=nickname, phone=phone, date_of_birth=date_of_birth)
-        print(user)
+        user = User.objects.create_user(username=username, password=password, email=email, nickname=nickname, phone=phone, date_of_birth=date_of_birth)
         jwt_token = jwt_token_of(user)
-        print("~~~~~~~~~~~")
         return user, jwt_token
 
