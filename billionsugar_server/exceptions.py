@@ -5,10 +5,17 @@ class BaseError(exceptions.APIException):
     pass
 
 
+class AuthentificationFailed(BaseError):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = '아이디 또는 비밀번호를 확인해주세요.'
+    default_code = 'E101'
+
+
 class FieldError(BaseError):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = '입력이 잘못 되었습니다.'
     default_code = 'E201'
+
 
 class DuplicationError(BaseError):
     status_code = status.HTTP_409_CONFLICT

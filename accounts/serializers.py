@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from billionsugar_server.exceptions import FieldError, DuplicationError
+from billionsugar_server.exceptions import FieldError, DuplicationError, AuthentificationFailed
 import re
 
 User = get_user_model()
@@ -70,4 +70,24 @@ class UserCreateSerializer(serializers.Serializer):
         user = User.objects.create_user(username=username, password=password, email=email, nickname=nickname, phone=phone, date_of_birth=date_of_birth)
         jwt_token = jwt_token_of(user)
         return user, jwt_token
+
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(write_only=True)
+    token = serializers.CharField(max_length=255, read_only=True)
+
+    def validate(self, data):
+        username = data.get('username', None)
+        password = data.get('password', None)
+
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            raise AuthentificationFailed()
+
+        return {
+            'username': user.username,
+            'token': jwt_token_of(user)
+        }
 

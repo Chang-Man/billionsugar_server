@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import UserCreateSerializer
+from .serializers import UserCreateSerializer, UserLoginSerializer
 from django.db import IntegrityError
 from rest_framework import status, permissions
 from rest_framework.response import Response
@@ -23,3 +23,15 @@ class UserSignUpView(APIView):
             'token': jwt_token
         }, status=status.HTTP_201_CREATED)
 
+
+class UserLoginView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data)
+        print("-------------------------")
+        serializer.is_valid(raise_exception=True)
+
+        token = serializer.validated_data['token']
+
+        return Response({'success': True, 'token': token}, status=status.HTTP_200_OK)
